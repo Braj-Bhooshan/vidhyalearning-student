@@ -36,9 +36,17 @@ fun SubdomainScreen(authViewModel: AuthViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(64.dp))
-        
+
+        Image(
+            painter = painterResource(id = R.drawable.vidya_learning_and),
+            contentDescription = "Logo",
+            modifier = Modifier.size(120.dp)
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
         Text(
-            text = "Welcome to Student Profile",
+            text = "Welcome to Student Vidya",
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold
         )

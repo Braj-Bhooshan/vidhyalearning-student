@@ -8,9 +8,9 @@
         android:name=".StudentApplication"
         android:allowBackup="true"
         android:usesCleartextTraffic="true"
-        android:icon="@drawable/vidya_learning"
+        android:icon="@drawable/vidya_learning_and"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/vidya_learning"
+        android:roundIcon="@drawable/vidya_learning_and"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="34">
