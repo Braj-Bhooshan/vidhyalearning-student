@@ -2,6 +2,7 @@ package com.studentprofile.app.presentation.viewmodel
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.studentprofile.app.BuildConfig
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -126,8 +127,11 @@ class AuthViewModel @Inject constructor(
             _isLoading.value = true
             _subdomainError.value = null
             try {
-                val school = schoolApi.getSchoolDetails(formattedDomain)
+                // Temporarily set the subdomain so the AuthInterceptor uses the correct host
+                // (e.g. https://{subdomain}.vidyalearning.org) for the discovery call.
                 tenantProvider.setSubdomain(formattedDomain)
+
+                val school = schoolApi.getSchoolDetails(formattedDomain)
                 tenantProvider.setSchoolName(school.name)
                 tenantProvider.setSchoolLogoUrl(school.logoUrl)
 
@@ -141,10 +145,15 @@ class AuthViewModel @Inject constructor(
                 }
 
                 _subdomain.value = formattedDomain
-                _apiUrl.value = "https://$formattedDomain.localtest.me:8002/api/v1"
+                _apiUrl.value = if (BuildConfig.DEBUG) {
+                    "https://$formattedDomain.localtest.me:8002/api/v1"
+                } else {
+                    "https://$formattedDomain.${TenantProvider.LIVE_API_DOMAIN}/api/v1"
+                }
                 _authState.value = AuthState.Unauthenticated
             } catch (e: Exception) {
                 e.printStackTrace()
+                tenantProvider.clearAll()
                 _subdomainError.value = "Connection failed: ${extractErrorMessage(e)}"
             } finally {
                 _isLoading.value = false

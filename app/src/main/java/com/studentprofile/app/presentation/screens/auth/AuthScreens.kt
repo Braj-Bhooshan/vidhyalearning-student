@@ -17,6 +17,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.studentprofile.app.BuildConfig
+import com.studentprofile.app.data.local.TenantProvider
 import com.studentprofile.app.presentation.viewmodel.AuthState
 import com.studentprofile.app.presentation.viewmodel.AuthViewModel
 import com.studentprofile.app.domain.models.StudentProfile
@@ -64,7 +66,9 @@ fun SubdomainScreen(authViewModel: AuthViewModel) {
             value = domain,
             onValueChange = { domain = it },
             label = { Text("Subdomain") },
-            suffix = { Text(".localtest.me:8002") },
+            suffix = {
+                Text(if (BuildConfig.DEBUG) ".localtest.me:8002" else ".${TenantProvider.LIVE_API_DOMAIN}")
+            },
             isError = subdomainError != null,
             supportingText = subdomainError?.let { err -> { Text(err) } },
             singleLine = true,
