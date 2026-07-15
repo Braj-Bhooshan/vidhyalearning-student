@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Student Profile</string>
+    
+    <!-- Navigation -->
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_todays_classes">Classes</string>
+    <string name="nav_homework">Homework</string>
+    <string name="nav_message">Message</string>
+    
+    <!-- Header -->
+    <string name="hello_greeting">Hello, Aditya Sharma</string>
+    <string name="class_info">Class 10 - A • ADM1001</string>
+    
+    <!-- Dashboard -->
+    <string name="student_name">Aditya Sharma</string>
+    <string name="status_active">Active</string>
+    <string name="fathers_name_label">Father\'s Name</string>
+    <string name="fathers_name">Vikram Sharma</string>
+    <string name="mothers_name_label">Mother\'s Name</string>
+    <string name="mothers_name">Neha Sharma</string>
+    <string name="view_profile">View Profile ></string>
+    
+    <!-- Performance Metrics -->
+    <string name="attendance">Attendance</string>
+    <string name="average_score">Average Score</string>
+    <string name="homework_submitted">Homework Submitted</string>
+    <string name="behaviour">Behaviour</string>
+    <string name="present_label">Present :</string>
+    <string name="absent_label">Absent :</string>
+    <string name="grade_label">Grade:</string>
+    <string name="rank_label">Rank:</string>
+    <string name="submitted_label">Submitted:</string>
+    <string name="pending_label">Pending :</string>
+    <string name="good">Good</string>
+    <string name="no_of_remarks">No. of Remarks: 1</string>
+    <string name="view_details">View Details ></string>
+    
+    <!-- Subject Performance -->
+    <string name="subject_performance_title">Subject-wise Performance (This Term)</string>
+    <string name="view_all">View All ></string>
+    
+    <!-- Recent Assessments -->
+    <string name="recent_assessments">Recent Assessments</string>
+    <string name="marks_obtained">Marks Obtained</string>
+    
+    <!-- Quick Actions -->
+    <string name="quick_actions">Quick Actions</string>
+    <string name="view_report_card">View Report Card</string>
+    <string name="view_marksheet">View Marksheet</string>
+    <string name="homework">Homework</string>
+    <string name="assignments">Assignments</string>
+    <string name="attendance_action">Attendance</string>
+    
+    <!-- Today\'s Classes -->
+    <string name="todays_classes_title">Today\'s Classes</string>
+    <string name="todays_classes_subtitle">Track what was taught today and watch class videos.</string>
+    <string name="select_date">Select Date</string>
+    <string name="date_value">24 May 2025, Saturday</string>
+    <string name="tab_todays_classes">Today\'s Classes</string>
+    <string name="tab_past_classes">Past Classes</string>
+    <string name="completed_classes">Completed Classes</string>
+    <string name="completed_classes_desc">Classes already conducted today</string>
+    <string name="three_classes">3 Classes</string>
+    <string name="completed">Completed</string>
+    <string name="play_video">Play Video</string>
+    <string name="how_it_works">How it works?</string>
+    <string name="how_it_works_desc">Click on "Play Video" to watch the class lecture recorded by the teacher.</string>
+    
+    <!-- Homework -->
+    <string name="homework_title">Homework</string>
+    <string name="homework_subtitle">View homework assigned to you and track your completion.</string>
+    <string name="date_value_short">24 May 2025</string>
+    <string name="tab_all_homework">All Homework</string>
+    <string name="tab_pending">Pending</string>
+    <string name="tab_completed">Completed</string>
+    <string name="pending_count">4</string>
+    <string name="completed_count">6</string>
+    <string name="status_completed">Completed</string>
+    <string name="status_pending">Pending</string>
+    <string name="download">Download</string>
+    <string name="assigned_on">Assigned on:</string>
+    <string name="due_date">Due date:</string>
+    <string name="homework_note">Note: Homework completion status is updated by the teacher.</string>
+    
+    <!-- Message -->
+    <string name="message_title">Message</string>
+    <string name="message_subtitle">Message your teachers directly.</string>
+    <string name="coming_soon">Coming Soon</string>
+</resources>

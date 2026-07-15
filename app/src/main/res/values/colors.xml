@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="navy_primary">#002874</color>
+    <color name="navy_dark">#001B4F</color>
+    <color name="navy_medium">#003399</color>
+    <color name="white">#FFFFFF</color>
+    <color name="background_gray">#F7F9FC</color>
+    <color name="background_light">#F0F4F8</color>
+    <color name="green_success">#28C76F</color>
+    <color name="green_light_bg">#E8F5E9</color>
+    <color name="amber_pending">#FF9F43</color>
+    <color name="amber_light_bg">#FFF3E0</color>
+    <color name="red_due">#EA5455</color>
+    <color name="blue_accent">#2196F3</color>
+    <color name="blue_light">#E3F2FD</color>
+    <color name="text_primary">#2D3748</color>
+    <color name="text_secondary">#718096</color>
+    <color name="text_tertiary">#A0AEC0</color>
+    <color name="border_light">#E2E8F0</color>
+    <color name="border_medium">#CBD5E0</color>
+    <color name="divider">#EDF2F7</color>
+    <color name="notification_badge">#FF6B00</color>
+    <color name="star_gold">#FFD700</color>
+    
+    <!-- Subject icon backgrounds -->
+    <color name="english_icon_bg">#FFF3E0</color>
+    <color name="english_icon_fg">#FF9800</color>
+    <color name="hindi_icon_bg">#FCE4EC</color>
+    <color name="hindi_icon_fg">#E91E63</color>
+    <color name="math_icon_bg">#E3F2FD</color>
+    <color name="math_icon_fg">#2196F3</color>
+    <color name="science_icon_bg">#E8F5E9</color>
+    <color name="science_icon_fg">#4CAF50</color>
+    <color name="social_icon_bg">#F3E5F5</color>
+    <color name="social_icon_fg">#9C27B0</color>
+    <color name="computer_icon_bg">#FFF8E1</color>
+    <color name="computer_icon_fg">#FFC107</color>
+    <color name="sanskrit_icon_bg">#E0F7FA</color>
+    <color name="sanskrit_icon_fg">#00BCD4</color>
+    
+    <!-- Progress ring colors -->
+    <color name="progress_attendance">#28C76F</color>
+    <color name="progress_avg_score">#002874</color>
+    <color name="progress_homework">#FF9F43</color>
+    <color name="progress_track">#E8ECF0</color>
+    
+    <!-- Info banner -->
+    <color name="info_banner_bg">#EBF5FF</color>
+    <color name="info_banner_text">#1A73E8</color>
+    
+    <!-- Bottom nav -->
+    <color name="bottom_nav_active">#002874</color>
+    <color name="bottom_nav_inactive">#A0AEC0</color>
+    
+    <!-- Tab indicator -->
+    <color name="tab_active">#002874</color>
+    <color name="tab_inactive">#718096</color>
+    
+    <!-- Progress bar colors for subjects -->
+    <color name="progress_english">#28C76F</color>
+    <color name="progress_hindi">#EA5455</color>
+    <color name="progress_math">#FF9F43</color>
+    <color name="progress_science">#28C76F</color>
+    <color name="progress_social">#28C76F</color>
+    <color name="progress_computer">#28C76F</color>
+    <color name="progress_sanskrit">#28C76F</color>
+    
+    <color name="transparent">#00000000</color>
+    <color name="black">#000000</color>
+    <color name="semi_transparent_black">#80000000</color>
+</resources>
