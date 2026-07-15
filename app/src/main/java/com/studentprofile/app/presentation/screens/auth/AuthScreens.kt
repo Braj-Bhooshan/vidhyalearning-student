@@ -37,14 +37,6 @@ fun SubdomainScreen(authViewModel: AuthViewModel) {
     ) {
         Spacer(modifier = Modifier.height(64.dp))
         
-        Image(
-            painter = painterResource(id = R.drawable.ic_logo_tree),
-            contentDescription = "Logo",
-            modifier = Modifier.size(120.dp)
-        )
-        
-        Spacer(modifier = Modifier.height(32.dp))
-        
         Text(
             text = "Welcome to Student Profile",
             style = MaterialTheme.typography.headlineMedium,
