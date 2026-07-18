@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import javax.inject.Inject
 
 const val ALL_SUBJECTS = "All Subjects"
@@ -186,6 +187,9 @@ class AssignmentViewModel @Inject constructor(
      * questions but still mark assignments complete, which is stored as a submission.
      */
     fun openAssignment(assignment: AssignmentItem, studentId: Int) {
+        if (_selectedAssignment.value?.id == assignment.id && (_isLoading.value || _questionBank.value != null)) {
+            return
+        }
         _selectedAssignment.value = assignment
         _questionBank.value = null
         _mySubmission.value = null
@@ -217,12 +221,28 @@ class AssignmentViewModel @Inject constructor(
                 }
 
                 if (topicId == null) {
+                    // No topic link stored for this assignment (created without a curriculum
+                    // link) and none could be resolved by title-matching taught classes -
+                    // there's nothing to guess here. Guessing topic_id = assignment.id is
+                    // unsound: it can collide with an unrelated real ClassTopic id belonging
+                    // to a different class/section and gets a 403, not a clean 404.
                     _noQuestionBank.value = true
                 } else {
-                    _questionBank.value = assignmentApi.getQuestionBank(topicId, studentId)
+                    try {
+                        _questionBank.value = assignmentApi.getQuestionBank(topicId, studentId)
+                    } catch (e: HttpException) {
+                        if (e.code() == 404 || e.code() == 403) {
+                            // 404 = topic has no bank; 403 = resolved topic isn't in this
+                            // student's class/section (e.g. a stale cached id) - both mean
+                            // there's no bank this student can see, not a retryable error.
+                            _noQuestionBank.value = true
+                        } else {
+                            _error.value = e.localizedMessage ?: "Failed to load questions."
+                        }
+                    }
                 }
             } catch (e: Exception) {
-                _noQuestionBank.value = true
+                _error.value = e.localizedMessage ?: "Failed to load this assignment."
             } finally {
                 _isLoading.value = false
             }

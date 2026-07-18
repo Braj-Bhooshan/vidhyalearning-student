@@ -18,10 +18,13 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
@@ -45,6 +48,7 @@ import com.studentprofile.app.ui.components.StudentTopBar
 fun AssignmentDetailScreen(
     viewModel: AssignmentViewModel,
     gradeLevel: Int,
+    studentId: Int,
     studentName: String,
     classInfo: String,
     onBack: () -> Unit,
@@ -58,6 +62,13 @@ fun AssignmentDetailScreen(
     val noQuestionBank by viewModel.noQuestionBank.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val isSubmitting by viewModel.isSubmitting.collectAsState()
+    val error by viewModel.error.collectAsState()
+
+    LaunchedEffect(assignment?.id, studentId) {
+        if (assignment != null && studentId != 0 && questionBank == null && !noQuestionBank && !isLoading) {
+            viewModel.openAssignment(assignment!!, studentId)
+        }
+    }
 
     // Only meaningful for the grade < 4 interactive flow.
     val answers = remember(assignment?.id) { mutableStateMapOf<Int, StudentAnswer>() }
@@ -107,6 +118,21 @@ fun AssignmentDetailScreen(
                     CircularProgressIndicator(color = StudentColors.NavyPrimary)
                 }
 
+                error != null -> Column(modifier = Modifier.padding(top = 24.dp)) {
+                    Text(
+                        error ?: "Failed to load questions.",
+                        color = StudentColors.RedDue,
+                        fontSize = 13.sp
+                    )
+                    Button(
+                        onClick = { assignment?.let { viewModel.openAssignment(it, studentId) } },
+                        colors = ButtonDefaults.buttonColors(containerColor = StudentColors.NavyPrimary),
+                        modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
+                    ) {
+                        Text("Retry")
+                    }
+                }
+
                 noQuestionBank -> Text(
                     "No questions have been added to this assignment yet.",
                     color = StudentColors.TextSecondary,
@@ -134,24 +160,22 @@ fun AssignmentDetailScreen(
                     }
                 }
 
-                gradeLevel >= 4 -> {
+                gradeLevel >= 4 && questionBank != null -> {
                     // Grade >= 4: parent-style read-only questions, completed with one tap.
-                    questionBank?.questions?.sortedBy { it.sortOrder }?.forEach { q ->
+                    questionBank!!.questions.sortedBy { it.sortOrder }.forEach { q ->
                         ReadOnlyQuestionCard(q)
                     }
-                    questionBank?.let { bank ->
-                        Button(
-                            onClick = { viewModel.submitAnswers(bank.id, emptyList()) },
-                            enabled = !isSubmitting,
-                            colors = ButtonDefaults.buttonColors(containerColor = StudentColors.NavyPrimary),
-                            modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
-                        ) {
-                            Text(if (isSubmitting) "Completing..." else "Mark as Complete")
-                        }
+                    Button(
+                        onClick = { viewModel.submitAnswers(questionBank!!.id, emptyList()) },
+                        enabled = !isSubmitting,
+                        colors = ButtonDefaults.buttonColors(containerColor = StudentColors.NavyPrimary),
+                        modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
+                    ) {
+                        Text(if (isSubmitting) "Completing..." else "Mark as Complete")
                     }
                 }
 
-                questionBank != null -> {
+                gradeLevel < 4 &&  questionBank != null -> {
                     // Grade < 4: answer MCQs in-app, then submit to complete.
                     questionBank!!.questions.sortedBy { it.sortOrder }.forEach { q ->
                         InteractiveQuestionCard(
@@ -239,17 +263,23 @@ private fun ReadOnlyQuestionCard(question: QuestionItem) {
                 }
             }
             "card_flip" -> FlipCard(question)
-            else -> Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp)
-                    .background(StudentColors.BackgroundLight, RoundedCornerShape(8.dp))
-            )
+            "long_description" -> AnswerLinesBox(height = 120.dp)
+            else -> AnswerLinesBox(height = 64.dp)
         }
     }
 }
 
-/** Grade < 4, not yet submitted: MCQ is tap-to-select; descriptive questions show no input at all. */
+@Composable
+private fun AnswerLinesBox(height: androidx.compose.ui.unit.Dp) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(height)
+            .background(StudentColors.BackgroundLight, RoundedCornerShape(8.dp))
+    )
+}
+
+/** Grade < 4, not yet submitted: MCQ is tap-to-select; descriptive questions get a text field when they need one. */
 @Composable
 private fun InteractiveQuestionCard(question: QuestionItem, selected: StudentAnswer?, onAnswer: (StudentAnswer?) -> Unit) {
     QuestionCardShell(question) {
@@ -276,6 +306,26 @@ private fun InteractiveQuestionCard(question: QuestionItem, selected: StudentAns
                 }
             }
             "card_flip" -> FlipCard(question)
+            "short_description", "long_description" -> {
+                if (question.requiresTextInput) {
+                    OutlinedTextField(
+                        value = selected?.studentAnswer ?: "",
+                        onValueChange = { text ->
+                            onAnswer(if (text.isBlank()) null else StudentAnswer(questionId = question.id, studentAnswer = text))
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        placeholder = { Text("Type your answer") },
+                        minLines = if (question.questionType == "long_description") 4 else 2,
+                        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = StudentColors.NavyPrimary)
+                    )
+                } else {
+                    Text(
+                        "This question doesn't need an answer from you.",
+                        color = StudentColors.TextTertiary,
+                        fontSize = 12.sp
+                    )
+                }
+            }
             else -> Text(
                 "This question doesn't need an answer from you.",
                 color = StudentColors.TextTertiary,
@@ -288,7 +338,28 @@ private fun InteractiveQuestionCard(question: QuestionItem, selected: StudentAns
 /** Grade < 4, already submitted: read-only view of the student's own stored answer + marks if graded. */
 @Composable
 private fun SubmittedQuestionCard(detail: QuestionResponseDetail) {
-    val question = detail.question ?: return
+    val question = detail.question
+    if (question == null) {
+        Card(modifier = Modifier.fillMaxWidth().padding(top = 12.dp), shape = RoundedCornerShape(14.dp)) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    "A question in your submission could not be loaded.",
+                    color = StudentColors.TextTertiary,
+                    fontSize = 12.sp
+                )
+                detail.obtainedMarks?.let {
+                    Text(
+                        "Marks: $it",
+                        color = StudentColors.GreenSuccess,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
+            }
+        }
+        return
+    }
     QuestionCardShell(question) {
         when (question.questionType) {
             "multiple_choice" -> {
@@ -305,6 +376,13 @@ private fun SubmittedQuestionCard(detail: QuestionResponseDetail) {
                 }
             }
             "card_flip" -> FlipCard(question)
+            "short_description", "long_description" -> {
+                if (!detail.studentAnswer.isNullOrBlank()) {
+                    Text(detail.studentAnswer, color = StudentColors.TextPrimary, fontSize = 13.sp)
+                } else {
+                    Text("Not answered", color = StudentColors.TextTertiary, fontSize = 12.sp)
+                }
+            }
             else -> Text("Not answered", color = StudentColors.TextTertiary, fontSize = 12.sp)
         }
         detail.obtainedMarks?.let {

@@ -147,6 +147,7 @@ fun StudentMainScreen(
                     "AssignmentDetail" -> AssignmentDetailScreen(
                         viewModel = assignmentViewModel,
                         gradeLevel = gradeLevel,
+                        studentId = student?.studentId?.toIntOrNull() ?: 0,
                         studentName = studentName,
                         classInfo = classAndSection,
                         onBack = { back() },
